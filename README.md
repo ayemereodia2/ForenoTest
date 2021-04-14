@@ -1,2 +1,2 @@
 # ForenoTest
-This is trading algo sample organized by Foreno.
+This is a trading algo sample organized by Foreno.
