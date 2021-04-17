@@ -33,6 +33,17 @@ export const Profile = (props) => {
         <View style={styles.form}>
           <View style={styled.inputGroup}>
             {/* Email */}
+            <Text style={styled.h5}> Current Broker ({props.auth.user?.brokers?.[0] || "None"}) </Text>
+            <TextInput
+              style={styled.input}
+              placeholder="Broker Name "
+              value={props.auth.user?.broker?.name|| "No Broker yet"}
+              editable={false}
+              placeholderTextColor={styled.text.color}
+            />
+          </View>
+          <View style={styled.inputGroup}>
+            {/* Email */}
             <Text style={styled.h5}> Email </Text>
             <TextInput
               style={styled.input}

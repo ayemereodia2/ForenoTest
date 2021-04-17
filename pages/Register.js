@@ -12,6 +12,7 @@ import { styled } from "../utils/global.styles";
 
 export const Register = (props) => {
   const [name, setName] = useState("");
+  const [brokerId, setBrokerId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -19,7 +20,7 @@ export const Register = (props) => {
 
   const register = async () => {
     setLoading(true);
-    await props.register({ name, email, password, confirm });
+    await props.register({ name, email, password, confirm, brokerId });
     setLoading(false);
   };
 
@@ -78,6 +79,18 @@ export const Register = (props) => {
               onChangeText={setConfirm}
               secureTextEntry={true}
               value={confirm}
+              editable={!loading}
+              placeholderTextColor={styled.text.color}
+            />
+          </View>
+          <View style={styled.inputGroup}>
+            {/* Broker Id */}
+            <Text style={styled.h5}> Broker ID </Text>
+            <TextInput
+              style={styled.input}
+              placeholder="Enter Broker ID"
+              onChangeText={setBrokerId}
+              value={brokerId}
               editable={!loading}
               placeholderTextColor={styled.text.color}
             />

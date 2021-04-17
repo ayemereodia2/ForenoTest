@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "671638158318",
-    "project_id": "foreno-test",
-    "storage_bucket": "foreno-test.appspot.com"
+    "project_number": "901056547970",
+    "project_id": "foreno-core",
+    "storage_bucket": "foreno-core.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:671638158318:android:1e01a7627ec648495e2cff",
+        "mobilesdk_app_id": "1:901056547970:android:63d4247fcbc6c6f5f6b89b",
         "android_client_info": {
           "package_name": "com.foreno.foreno"
         }
       },
       "oauth_client": [
         {
-          "client_id": "671638158318-6gdgrmdeg7md49u2l1b3pupjk8rdsbg8.apps.googleusercontent.com",
+          "client_id": "901056547970-m449rmavqib3pk8hbkfl2kh4j1j8d5pa.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBVJ5J_C_8S_RLT_ETXRVwBGOGgAPsMit0"
+          "current_key": "AIzaSyCTCy3iPyPSxxMX3KECC6qWMF0jxxqU8wQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "671638158318-6gdgrmdeg7md49u2l1b3pupjk8rdsbg8.apps.googleusercontent.com",
+              "client_id": "901056547970-m449rmavqib3pk8hbkfl2kh4j1j8d5pa.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

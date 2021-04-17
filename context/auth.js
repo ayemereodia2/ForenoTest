@@ -1,6 +1,6 @@
 import React, { useEffect, createContext, useState, useContext } from "react";
 import Toast from "react-native-root-toast";
-import firebase from "firebase";
+import firebase, { firestore } from "firebase";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { SafeScrollView } from "../components/SafeScrollView";
 
@@ -67,10 +67,14 @@ export const UserProvider = ({ children }) => {
             .doc(token)
             .get();
 
+          let data = user.data();
           dispatch({
             type: "LOG_IN",
             token,
-            user: user.data(),
+            user: {
+              ...data,
+              broker: data?.brokers && await dispatches.getBroker(data?.brokers?.[0] || '')
+            },
           });
 
           Toast.show("Logged In 🥳", {
@@ -99,6 +103,31 @@ export const UserProvider = ({ children }) => {
         await firebase.auth().signOut();
       },
 
+      getBroker: async (brokerId) => {
+        try {
+          let broker = await firebase
+            .firestore()
+            .collection("users")
+            .where('brokerId', '==', brokerId)
+            .get();
+
+          let data = null;
+          if (broker.size > 0) {
+            data = broker.docs[0].data();
+          }
+          return data;
+
+        } catch (error) {
+          Toast.show(error.message, {
+            backgroundColor: "orange",
+            duration: Toast.durations.LONG,
+            position: Toast.positions.TOP,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+          });
+        }
+      },
       refreshUser: async (id) => {
         try {
           let user = await firebase
@@ -107,10 +136,14 @@ export const UserProvider = ({ children }) => {
             .doc(id)
             .get();
 
+          let data = user.data();
           dispatch({
             type: "LOG_IN",
             token: id,
-            user: user.data(),
+            user: {
+              ...data,
+              broker: data?.brokers && await dispatches.getBroker(data?.brokers?.[0] || '')
+            },
           });
 
           Toast.show("User Refreshed 🥳", {
@@ -133,16 +166,28 @@ export const UserProvider = ({ children }) => {
         }
       },
 
-      register: async ({ email, password, confirm, name }) => {
+      register: async ({ email, password, confirm, name, brokerId }) => {
         try {
           // Validation
-          if (!email || !password || !confirm || !name) {
+          if (!email || !password || !confirm || !name || !brokerId) {
             throw new Error("All Fields are Required");
           }
 
           if (password !== confirm) {
             throw new Error("Password Mismatch");
           }
+
+          //find broker by ID
+          let broker = await firebase
+            .firestore()
+            .collection("users")
+            .where('brokerId', '==', brokerId)
+            .get();
+
+          if (broker.size < 1) {
+            throw new Error("Broker not found");
+          }
+          console.log("Broker found", broker.docs[0].data())
 
           const credentials = await firebase
             .auth()
@@ -151,6 +196,7 @@ export const UserProvider = ({ children }) => {
           await firebase.firestore().collection("users").doc(token).set({
             email,
             name,
+            brokers: firestore.FieldValue.arrayUnion(brokerId)
           });
 
           Toast.show("Registered 🥳", {
@@ -165,7 +211,10 @@ export const UserProvider = ({ children }) => {
           dispatch({
             type: "LOG_IN",
             token,
-            user: { name, email },
+            user: {
+              name, email,
+              broker: brokerId && await dispatches.getBroker(brokerId)
+            },
           });
         } catch (error) {
           Toast.show(error.message, {
@@ -195,13 +244,18 @@ export const UserProvider = ({ children }) => {
               .doc(token)
               .get();
 
-            console.log(user.data());
+            let data = user.data();
 
+            console.log(data);
             dispatch({
               type: "LOG_IN",
               token,
-              user: user.data(),
+              user: {
+                ...data,
+                broker: data?.brokers && await dispatches.getBroker(data?.brokers?.[0] || '')
+              },
             });
+
           } else {
             dispatch({ type: "LOG_OUT" });
           }
@@ -223,8 +277,8 @@ export const UserProvider = ({ children }) => {
           <ActivityIndicator color="#fff" />
         </SafeScrollView>
       ) : (
-        children
-      )}
+          children
+        )}
     </UserContext.Provider>
   );
 };
