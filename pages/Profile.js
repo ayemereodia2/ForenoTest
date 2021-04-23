@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   Alert,
+  Clipboard,
 } from "react-native";
 import { Avatar } from "../components/Avatar";
 import { Pill } from "../components/Pill";
@@ -17,10 +18,10 @@ export const Profile = (props) => {
   const [expired, setExpired] = useState(
     props.auth?.user?.isSubscribed
       ? moment().diff(
-          props.auth?.user?.expires
-            ? props.auth?.user?.expires?.toDate()
-            : new Date()
-        ) > 0
+        props.auth?.user?.expires
+          ? props.auth?.user?.expires?.toDate()
+          : new Date()
+      ) > 0
       : true
   );
 
@@ -31,17 +32,44 @@ export const Profile = (props) => {
         <Text style={[styled.h3]}>{props.auth.user?.name}</Text>
 
         <View style={styles.form}>
-          <View style={styled.inputGroup}>
-            {/* Email */}
-            <Text style={styled.h5}> Current Broker ({props.auth.user?.brokers?.[0] || "None"}) </Text>
-            <TextInput
-              style={styled.input}
-              placeholder="Broker Name "
-              value={props.auth.user?.broker?.name|| "No Broker yet"}
-              editable={false}
-              placeholderTextColor={styled.text.color}
-            />
-          </View>
+          {props.auth?.user?.isBroker ?
+
+            <View style={styled.inputGroup}>
+              {/* Email */}
+              <Text style={styled.h5}> Your Broker ID ({props.auth.user?.brokerId|| "None"}) </Text>
+              <TextInput
+                style={styled.input}
+                placeholder="Broker ID "
+                value={props.auth.user?.brokerId || "No ID available"}
+                editable={false}
+                placeholderTextColor={styled.text.color}
+              />
+              {/* Copy to Clipboard */}
+              <View style={styles.button}>
+                <TouchableOpacity
+                  style={[styled.button]}
+                  // disabled={loading}
+                  onPress={() => Clipboard.setString(props.auth.user?.brokerId)}
+                >
+              <Text style={[styled.buttonText, styled.textCenter]}>
+                    Copy to Clipboard
+              </Text>
+          </TouchableOpacity>
+              </View>
+            </View> 
+            :
+            <View style={styled.inputGroup}>
+              {/* Email */}
+              <Text style={styled.h5}> Current Broker ({props.auth.user?.brokers?.[0] || "None"}) </Text>
+              <TextInput
+                style={styled.input}
+                placeholder="Broker Name "
+                value={props.auth.user?.broker?.name || "No Broker yet"}
+                editable={false}
+                placeholderTextColor={styled.text.color}
+              />
+            </View>
+          }
           <View style={styled.inputGroup}>
             {/* Email */}
             <Text style={styled.h5}> Email </Text>
@@ -111,5 +139,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     width: "90%",
+  },
+  button: {
+    // width: "50%",
+    marginVertical: 10,
   },
 });

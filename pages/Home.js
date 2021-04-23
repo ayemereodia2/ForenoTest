@@ -83,7 +83,7 @@ export const Home = (props) => {
       <View style={[styles.header, styled.row, styled.between]}>
         <Text style={styled.h3}>
           Signals
-          {props.auth.user.isAdmin && (
+          {(props.auth.user.isAdmin || props.auth.user.isBroker)  && (
             <Text style={[styled.h6, styled.bold, styled.link]}> Admin </Text>
           )}
         </Text>
@@ -173,7 +173,7 @@ export const Home = (props) => {
           );
         }}
       />
-      {props.auth.user.isAdmin && (
+      {(props.auth.user.isAdmin || props.auth.user.isBroker) && (
         <>
           <TouchableOpacity
             onPress={async () => setIsModalVisible(true)}

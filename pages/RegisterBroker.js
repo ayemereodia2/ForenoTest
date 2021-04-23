@@ -10,7 +10,7 @@ import {
 import { SafeScrollView } from "../components/SafeScrollView";
 import { styled } from "../utils/global.styles";
 
-export const Register = (props) => {
+export const RegisterBroker = (props) => {
   const [name, setName] = useState("");
   const [brokerId, setBrokerId] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export const Register = (props) => {
 
   const register = async () => {
     setLoading(true);
-    await props.register({ name, email, password, confirm, brokerId });
+    await props.registerBroker({ name, email, password, confirm, brokerId });
     setLoading(false);
   };
 
@@ -83,8 +83,8 @@ export const Register = (props) => {
               placeholderTextColor={styled.text.color}
             />
           </View>
-          <View style={styled.inputGroup}>
-            {/* Broker Id */}
+          {/* <View style={styled.inputGroup}>
+            {/* Broker Id * /}
             <Text style={styled.h5}> Broker ID </Text>
             <TextInput
               style={styled.input}
@@ -94,7 +94,7 @@ export const Register = (props) => {
               editable={!loading}
               placeholderTextColor={styled.text.color}
             />
-          </View>
+          </View> */}
         </View>
 
         {/* Sign up */}
@@ -108,17 +108,17 @@ export const Register = (props) => {
               <ActivityIndicator color={styled.buttonText.color} />
             ) : (
               <Text style={[styled.buttonText, styled.textCenter]}>
-                Sign up
+                Sign up as Broker
               </Text>
             )}
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={()=>props.navigation.navigate("RegisterBroker")}>
+        {/* <TouchableOpacity onPress={props.navigation.navigate("Register")}>
           <Text style={[styled.h5, styled.link, styled.textCenter, {color: 'white'}]}>
-            Sign up as a Broker
+            Sign up as a User
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity onPress={props.navigation.goBack}>
           <Text style={[styled.h5, styled.link, styled.textCenter]}>

@@ -3,6 +3,7 @@ import Toast from "react-native-root-toast";
 import firebase, { firestore } from "firebase";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { SafeScrollView } from "../components/SafeScrollView";
+import randomString from "../utils/random";
 
 const UserContext = createContext();
 
@@ -216,6 +217,10 @@ export const UserProvider = ({ children }) => {
               broker: brokerId && await dispatches.getBroker(brokerId)
             },
           });
+          
+          //attempt to refresh the user after registration
+          dispatches.refreshUser(token);
+
         } catch (error) {
           Toast.show(error.message, {
             backgroundColor: "orange",
@@ -226,6 +231,72 @@ export const UserProvider = ({ children }) => {
             hideOnPress: true,
           });
         }
+
+      },
+
+      registerBroker: async ({ email, password, confirm, name, brokerId }) => {
+        try {
+          // Validation
+          if (!email || !password || !confirm || !name ) {
+            throw new Error("All Fields are Required");
+          }
+
+          if (password !== confirm) {
+            throw new Error("Password Mismatch");
+          }
+
+          //attempt to generate random public ID for this user
+          brokerId = randomString(5);
+
+          //check if generated broker ID exists
+          
+          let size = 1;
+          let attempts = 0;
+          while (size>0) {
+            let broker = await firebase
+            .firestore()
+            .collection("users")
+            .where('brokerId', '==', brokerId)
+            .get();
+            size = broker.size;
+
+            console.log("Broker Search attempt: ", ++attempts, size)
+          }
+
+          const credentials = await firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, password);
+          const token = await credentials.user.uid;
+          await firebase.firestore().collection("users").doc(token).set({
+            email,
+            name,
+            isBroker: true,
+            brokerId,
+            // brokers: firestore.FieldValue.arrayUnion(brokerId)
+          });
+
+          Toast.show("Registered 🥳", {
+            backgroundColor: "green",
+            duration: Toast.durations.LONG,
+            position: Toast.positions.TOP,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+          });
+
+          
+        } catch (error) {
+          Toast.show(error.message, {
+            backgroundColor: "orange",
+            duration: Toast.durations.LONG,
+            position: Toast.positions.TOP,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+          });
+        }
+        //auto login
+        dispatches.login({email,password})
       },
     }),
     [dispatch]

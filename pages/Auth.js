@@ -47,6 +47,11 @@ export const Auth = (props) => (
         </TouchableOpacity>
       </View>
     </View>
+    <TouchableOpacity onPress={()=>props.navigation.navigate("RegisterBroker")}>
+          <Text style={[styled.h5, styled.link, styled.textCenter]}>
+            Sign up as a Broker
+          </Text>
+        </TouchableOpacity>
   </SafeScrollView>
 );
 
